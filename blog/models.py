@@ -76,3 +76,6 @@ class Post(models.Model):
         # Post 的id和pk是等价的
         return reverse('blog:detail',kwargs={'pk':self.pk})
 
+    class Meta:
+        ordering = ['-created_time']
+

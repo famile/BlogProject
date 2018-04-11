@@ -3,6 +3,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from .models import Post,Category
 import markdown
+from comments.forms import CommentForm
 
 # Create your views here.
 
@@ -28,9 +29,16 @@ def detail(request,pk):
                                       'markdown.extensions.codehilite',
                                       'markdown.extensions.toc',
                                   ])
+
+    form = CommentForm()
+    # 获取这篇post下的全部评论
+    comment_list = post.comment_set.all()
+
     return render(request,'blog/detail.html',
                   context={
                       'post':post,
+                      'form':form,
+                      'comment_list':comment_list
                   })
 
 # 归档
