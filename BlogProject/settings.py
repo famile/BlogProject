@@ -24,9 +24,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '%mzy(&l0jfg$d^wqmj$8i3eyt6)diwd_$pqb+q6fguo(@#og93'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1','localhost','140.143.67.181']
 
 
 # Application definition
@@ -125,3 +125,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
+# 指明了静态文件的手机目录，即项目根目录（BASE_DIR）下的static文件夹
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
