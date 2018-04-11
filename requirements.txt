@@ -19,6 +19,5 @@ requests==2.18.4
 scipy==0.13.0
 six==1.4.1
 urllib3==1.22
-vboxapi==1.0
 xattr==0.6.4
 zope.interface==4.1.1
