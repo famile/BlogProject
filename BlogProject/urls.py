@@ -23,6 +23,6 @@ from django.contrib import admin
 # 这里导入了include 利用这个函数把blog应用下的urls.py文件包含进来
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'blog/',include('blog.urls',namespace='blog')),
+    url(r'',include('blog.urls')),#blog/ ,namespace='blog'
     url(r'',include('comments.urls')),
 ]
