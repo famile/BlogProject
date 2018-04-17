@@ -21,6 +21,7 @@ def index(request):
 def detail(request,pk):
     # 这里我们引入get_object_or_404方法，其作用就是当传入pk对应的Post在数据库存在时，就返回对应的post，如果不存在就给用户染回一个404错误
     post = get_object_or_404(Post,pk=pk)
+    post.increase_views()
     # 记得在顶部引入markdown模块
     # 这里我们给markdown渲染函数传递了额外的参数extensions，它是对markdown语法的扩展，这里我们使用了3个扩展，分别是extra（本身包含很多扩展），codehilite（语法高亮扩展），toc（自动生成目录）
     post.body = markdown.markdown(post.body,

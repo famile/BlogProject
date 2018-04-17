@@ -67,6 +67,8 @@ class Post(models.Model):
     # 这里我们通过ForeighKey 把文章和User关联了起来
     # 因为我们规定一篇文章只能有一个作者,而一个作者可能会写多篇文章,因此这是一对多的关联关系,和Category类型
     author = models.ForeignKey(User)
+    # 新增views字段记录阅读量，该类型的值只允许为正整数或0，
+    views = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.title
@@ -75,6 +77,10 @@ class Post(models.Model):
         # 'blog:detail' 意思是blog应用下的name=detail的函数，reverse函数会去解析这个视图函数对应的URL
         # Post 的id和pk是等价的
         return reverse('blog:detail',kwargs={'pk':self.pk})
+
+    def increase_views(self):
+        self.views += 1
+        self.save(update_fields=['views'])
 
     class Meta:
         ordering = ['-created_time']
