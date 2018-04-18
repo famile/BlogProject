@@ -4,9 +4,23 @@ from django.http import HttpResponse
 from .models import Post,Category
 import markdown
 from comments.forms import CommentForm
+from django.views.generic import ListView
 
 # Create your views here.
 
+class IndexView(ListView):
+    model = Post
+    template_name = 'blog/index.html'
+    context_object_name = 'post_list'
+
+class CategoryView(IndexView):
+
+    # 这个方法默认获取指定模型的全部列表数据，为了获取指定分类文章列表数据，我们复写该方法
+    def get_queryset(self):
+        # 在类视图中，从URL捕获的命名组参数保存在实例的kwargs，非命名组参数保存在args，
+        # 使用 self.kwargs.get('pk') 来获取从 URL 捕获的分类 id 值
+        cate = get_object_or_404(Category, pk=self.kwargs.get('pk'))
+        return super(CategoryView,self).get_queryset().filter(category=cate)
 #
 def index(request):
 

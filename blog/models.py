@@ -4,7 +4,10 @@ from __future__ import unicode_literals
 from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
+import markdown
+from django.utils.html import strip_tags
 from django.utils.six import python_2_unicode_compatible
+
 
 # Create your models here.
 
@@ -27,22 +30,25 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
-class Tag(models.Model):
 
+class Tag(models.Model):
     name = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name
 
+
 # @python_2_unicode_compatible
 class Post(models.Model):
-
     # 文章标题
     title = models.CharField(max_length=70)
 
     # 文章正文, 使用了TextField
     # 存储比较短的字符串使用CharField,但对于文章的正文来说可能是一大段文本,因此使用TextField
     body = models.TextField()
+
+    # excerpt用于存储摘要，通过模型的save方法，在数据被保存到数据库前，先从body字段摘取n个字符保存到excerpt字段中，从而实现自动摘要的目的
+    excerpt = models.CharField(max_length=200, blank=True)
 
     # 这两个分别表示文章的创建时间和最后一次修改时间,存储时间的字段用DateTimeField类型
     created_time = models.DateTimeField()
@@ -76,12 +82,26 @@ class Post(models.Model):
     def get_absolute_url(self):
         # 'blog:detail' 意思是blog应用下的name=detail的函数，reverse函数会去解析这个视图函数对应的URL
         # Post 的id和pk是等价的
-        return reverse('blog:detail',kwargs={'pk':self.pk})
+        return reverse('blog:detail', kwargs={'pk': self.pk})
 
     def increase_views(self):
         self.views += 1
         self.save(update_fields=['views'])
 
+    def save(self, *args, **kwargs):
+        # 如果没有摘要
+        if not self.excerpt:
+            # 首先实例化一个Markdown类，用于渲染body的文本
+            md = markdown.Markdown(extensions=[
+                'markdown.extensions.extra',
+                'markdown.extensions.codehilite',
+            ])
+            # 先将Markdown文本渲染成HTML文本
+            # strip_tags去掉HTML文本的全部HTML标签
+            # 从文本摘取前54个字符给excerpt
+            self.excerpt = strip_tags(md.convert(self.body))[:54]
+        # 调用父类的save方法将数据保存到数据库中
+        super(Post, self).save(*args, **kwargs)
+
     class Meta:
         ordering = ['-created_time']
-
