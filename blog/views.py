@@ -13,7 +13,10 @@ class IndexView(ListView):
     template_name = 'blog/index.html'
     context_object_name = 'post_list'
 
-class CategoryView(IndexView):
+class CategoryView(ListView):
+    model = Post
+    template_name = 'blog/index.html'
+    context_object_name = 'post_list'
 
     # 这个方法默认获取指定模型的全部列表数据，为了获取指定分类文章列表数据，我们复写该方法
     def get_queryset(self):
